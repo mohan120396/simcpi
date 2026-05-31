@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MCPark</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+     background:#080b12;color:#e2e8f0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── Header ── */
+header{display:flex;align-items:center;gap:12px;padding:0 20px;height:52px;
+       background:rgba(15,17,26,0.95);border-bottom:1px solid #1e2235;
+       flex-shrink:0;backdrop-filter:blur(10px);position:relative;z-index:10}
+.logo{width:28px;height:28px;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
+      border-radius:7px;display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:800;color:#fff;box-shadow:0 0 12px rgba(99,102,241,.4)}
+header h1{font-size:14px;font-weight:700;color:#f1f5f9;letter-spacing:-.01em}
+header .sep{color:#1e2235;font-size:18px;margin:0 2px}
+header .sub{font-size:12px;color:#4a5568;font-weight:500}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#10b981;
+            box-shadow:0 0 6px rgba(16,185,129,.6);flex-shrink:0}
+.status-txt{font-size:11px;color:#4a5568}
+nav{display:flex;gap:4px;margin-left:16px}
+nav a{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;
+      text-decoration:none;color:#64748b;transition:all .15s}
+nav a:hover{color:#e2e8f0;background:#1a1d27}
+nav a.active{background:#6366f1;color:#fff}
+
+/* ── Layout ── */
+.wrap{display:grid;grid-template-columns:280px 1fr;flex:1;overflow:hidden;min-height:0}
+
+/* ── Sidebar ── */
+aside{background:#0c0f1a;border-right:1px solid #1e2235;
+      overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.sidebar-section{padding:14px 16px;border-bottom:1px solid #1a1d2e}
+.slabel{font-size:10px;font-weight:700;letter-spacing:.1em;
+        text-transform:uppercase;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.slabel-dot{width:4px;height:4px;border-radius:50%;background:#6366f1}
+
+/* Server badge */
+.server-badge{font-size:11px;font-family:monospace;background:#0f1117;
+              color:#818cf8;border:1px solid #1e2235;border-radius:6px;
+              padding:6px 10px;word-break:break-all;display:flex;align-items:center;gap:6px}
+.server-badge .dot{width:6px;height:6px;border-radius:50%;background:#10b981;flex-shrink:0;
+                   box-shadow:0 0 5px rgba(16,185,129,.5)}
+
+/* Provider toggle */
+.provider-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pb{padding:8px 0;border-radius:7px;font-size:12px;font-weight:600;
+    text-align:center;cursor:pointer;border:1px solid #1e2235;
+    background:#0f1117;color:#4a5568;transition:all .2s;user-select:none}
+.pb:hover{border-color:#4f46e5;color:#818cf8}
+.pb.on{background:linear-gradient(135deg,#4f46e5,#7c3aed);border-color:transparent;
+       color:#fff;box-shadow:0 2px 12px rgba(99,102,241,.3)}
+
+/* Inputs */
+.field{position:relative;margin-bottom:0}
+.field input,.field select{width:100%;background:#0f1117;border:1px solid #1e2235;
+  border-radius:7px;color:#e2e8f0;font-size:12px;padding:8px 34px 8px 10px;
+  outline:none;font-family:inherit;transition:border-color .15s}
+.field input:focus,.field select:focus{border-color:#6366f1;box-shadow:0 0 0 2px rgba(99,102,241,.1)}
+.field input::placeholder{color:#2d3149}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);
+     background:none;border:none;color:#374151;cursor:pointer;font-size:13px;padding:2px;
+     transition:color .15s}
+.eye:hover{color:#818cf8}
+.field select{padding:8px 10px;cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a5568'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center}
+
+/* Connect Claude button */
+.connect-btn{width:100%;padding:8px;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;border:1px solid #1e2235;background:#0f1117;color:#818cf8;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.connect-btn:hover{border-color:#6366f1;background:#0f1117;color:#a5b4fc;
+                   box-shadow:0 0 12px rgba(99,102,241,.15)}
+.claude-config-panel{margin-top:10px;background:#0a0d18;border:1px solid #1e2235;
+  border-radius:8px;padding:12px;display:none}
+.claude-config-panel .cfg-label{font-size:10px;color:#38bdf8;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.claude-config-panel pre{font-size:10px;font-family:monospace;color:#7dd3fc;
+  white-space:pre-wrap;word-break:break-all;line-height:1.6}
+.copy-cfg-btn{margin-top:8px;width:100%;padding:5px;border-radius:5px;font-size:11px;
+  font-weight:600;cursor:pointer;border:1px solid #1e2235;background:#0f1117;
+  color:#38bdf8;transition:all .15s}
+.copy-cfg-btn:hover{background:#0a1a2e;border-color:#38bdf8}
+
+/* Tools list */
+.tools-section{padding:14px 16px;display:flex;flex-direction:column}
+.tools-scroll{display:flex;flex-direction:column;gap:6px;margin-top:0;padding-right:4px}
+.tool-card{background:#0f1117;border:1px solid #1a1d2e;border-radius:9px;
+           padding:10px 12px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.tool-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+                   background:linear-gradient(180deg,#6366f1,#8b5cf6);border-radius:3px 0 0 3px;
+                   opacity:0;transition:opacity .2s}
+.tool-card:hover{border-color:#2d3149;background:#111422;transform:translateX(2px)}
+.tool-card:hover::before{opacity:1}
+.tool-name{font-size:12px;font-weight:700;color:#a5b4fc;font-family:monospace}
+.tool-desc{font-size:11px;color:#4a5568;margin-top:3px;line-height:1.4}
+.tool-params{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px}
+.param{font-size:10px;font-family:monospace;background:#1a1d2e;
+       color:#64748b;border:1px solid #2d3149;border-radius:3px;padding:1px 6px}
+.hint{font-size:11px;color:#2d3149;text-align:center;padding:20px 0}
+
+/* ── Custom headers collapsible ── */
+.collapse-header{display:flex;align-items:center;justify-content:space-between;
+                 cursor:pointer;padding:2px 0}
+.collapse-header:hover .slabel{color:#64748b}
+.collapse-arrow{color:#374151;font-size:10px;transition:transform .2s}
+.collapse-arrow.open{transform:rotate(90deg)}
+.collapse-body{margin-top:10px;display:none;flex-direction:column;gap:6px}
+.collapse-body.open{display:flex}
+.header-row{display:flex;gap:4px}
+.header-row input{flex:1;background:#0f1117;border:1px solid #1e2235;border-radius:5px;
+  color:#e2e8f0;font-size:11px;padding:6px 8px;outline:none;font-family:monospace;
+  transition:border-color .15s}
+.header-row input:focus{border-color:#6366f1}
+.header-row input::placeholder{color:#2d3149}
+.add-header-btn{width:100%;padding:5px;border-radius:5px;font-size:11px;cursor:pointer;
+  border:1px solid #1e2235;background:#0f1117;color:#374151;transition:all .15s}
+.add-header-btn:hover{border-color:#4f46e5;color:#818cf8}
+
+/* ── Main chat area ── */
+main{display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#080b12}
+.trace{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;
+       gap:16px;min-height:0}
+
+/* Empty state */
+.trace-empty{flex:1;display:flex;flex-direction:column;align-items:center;
+             justify-content:center;gap:0;color:#1a1d2e;padding-bottom:40px}
+.empty-icon{width:56px;height:56px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));
+            border:1px solid rgba(99,102,241,.2);border-radius:16px;
+            display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.empty-title{font-size:15px;font-weight:600;color:#2d3149;margin-bottom:6px}
+.empty-sub{font-size:12px;color:#1e2235;text-align:center;line-height:1.6;max-width:280px}
+.empty-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
+.empty-chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;
+            background:#0f1117;border:1px solid #1e2235;color:#374151;cursor:pointer;
+            transition:all .2s}
+.empty-chip:hover{border-color:#6366f1;color:#818cf8;background:#111422}
+
+/* Message blocks */
+.block{border-radius:10px;padding:13px 16px;font-size:13px;line-height:1.65;
+       border:1px solid transparent;animation:pop .18s ease}
+@keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.block.user{background:#111422;border-color:#1e2235;align-self:flex-end;
+            max-width:70%;border-bottom-right-radius:3px}
+.block.thinking{background:#0c0f1a;border-color:#1a1d2e;color:#374151;
+                font-style:italic;display:flex;align-items:center;gap:10px}
+.block.tool-call{background:#0a160f;border-color:#14291f;border-left:3px solid #10b981}
+.block.tool-result{background:#090e1a;border-color:#111829;border-left:3px solid #6366f1}
+.block.assistant{background:#0c0f1a;border-color:#1a1d2e;border-left:3px solid #8b5cf6}
+.block.error{background:#140a0a;border-color:#2e1010;border-left:3px solid #ef4444;color:#fca5a5}
+.blabel{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+        margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.block.user .blabel{color:#6366f1}
+.block.thinking .blabel{color:#374151}
+.block.tool-call .blabel{color:#10b981}
+.block.tool-result .blabel{color:#6366f1}
+.block.assistant .blabel{color:#8b5cf6}
+.block.error .blabel{color:#ef4444}
+pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
+         background:#060810;border-radius:7px;border:1px solid #1a1d2e;
+         padding:10px 12px;margin-top:8px;color:#86efac;white-space:pre-wrap;word-break:break-all;
+         line-height:1.6}
+.block.tool-result pre.code{color:#818cf8}
+.block.error pre.code{color:#fca5a5}
+
+/* Verdict */
+.verdict{display:inline-flex;align-items:center;gap:6px;font-size:11px;
+         font-weight:700;padding:4px 10px;border-radius:20px;margin-top:8px}
+.verdict.pass{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2)}
+.verdict.fail{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
+
+/* ── Input bar ── */
+.ibar{border-top:1px solid #1a1d2e;padding:14px 20px;background:#0c0f1a;
+      display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
+.ibar textarea{flex:1;background:#0f1117;border:1px solid #1e2235;border-radius:9px;
+               color:#e2e8f0;font-size:13px;padding:10px 14px;resize:none;outline:none;
+               line-height:1.5;min-height:44px;max-height:120px;font-family:inherit;
+               transition:border-color .15s}
+.ibar textarea:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+.ibar textarea::placeholder{color:#2d3149}
+.run-btn{padding:10px 22px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;
+         border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;
+         transition:all .2s;white-space:nowrap;height:44px;
+         box-shadow:0 2px 12px rgba(99,102,241,.3)}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(99,102,241,.4)}
+.run-btn:active{transform:translateY(0)}
+.run-btn:disabled{background:#1a1d2e;color:#374151;cursor:not-allowed;
+                  box-shadow:none;transform:none}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid #374151;
+      border-top-color:#818cf8;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Assistant toggle ── */
+.asst-toggle{display:flex;align-items:center;gap:7px;user-select:none;cursor:pointer;
+             padding:0 4px;height:44px;flex-shrink:0}
+.asst-toggle .tlabel{font-size:11px;font-weight:600;color:#4a5568;white-space:nowrap;transition:color .15s}
+.asst-toggle.on .tlabel{color:#818cf8}
+.switch{width:34px;height:19px;border-radius:20px;background:#1e2235;
+        border:1px solid #2d3149;position:relative;transition:all .2s;flex-shrink:0}
+.asst-toggle.on .switch{background:linear-gradient(135deg,#4f46e5,#7c3aed);border-color:transparent}
+.switch::after{content:"";position:absolute;top:1px;left:1px;width:15px;height:15px;
+               border-radius:50%;background:#64748b;transition:all .2s}
+.asst-toggle.on .switch::after{transform:translateX(15px);background:#fff}
+
+/* ── File preview ── */
+.file-preview{margin-top:10px;border-radius:8px;overflow:hidden;border:1px solid #1a1d2e}
+.file-preview img{max-width:100%;max-height:400px;display:block}
+.file-preview iframe{width:100%;height:400px;border:none;background:#fff}
+.file-preview table{width:100%;border-collapse:collapse;font-size:11px;font-family:monospace}
+.file-preview table th{background:#0a0d18;color:#6366f1;padding:6px 10px;text-align:left;
+                        border-bottom:1px solid #1e2235;font-weight:700;font-size:10px;
+                        text-transform:uppercase;letter-spacing:.05em}
+.file-preview table td{padding:5px 10px;color:#94a3b8;border-bottom:1px solid #0f1117}
+.file-preview table tr:last-child td{border-bottom:none}
+.file-preview table tr:hover td{background:#0a0d18}
+.download-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+              padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;
+              background:#0f1117;color:#818cf8;border:1px solid #1e2235;
+              text-decoration:none;transition:all .15s}
+.download-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#1e2235;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#2d3149}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">⚡</div>
+  <h1>simcpi</h1>
+  <span class="sep">|</span>
+  <span class="sub">MCPark</span>
+  <div class="header-right">
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-txt" id="statusTxt">connected</span>
+    <nav>
+      <a href="/docs">Swagger UI</a>
+      <a href="/mcpark" class="active">MCPark</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside>
+
+    <!-- Server -->
+    <div class="sidebar-section">
+      <div class="slabel"><span class="slabel-dot"></span>MCP Server</div>
+      <div class="server-badge">
+        <span class="dot"></span>
+        <span id="serverBadge">loading…</span>
+      </div>
+    </div>
+
+    <!-- Connect to Claude -->
+    <div class="sidebar-section">
+      <div class="slabel"><span class="slabel-dot"></span>Claude Desktop</div>
+      <button class="connect-btn" onclick="showClaudeConfig()">
+        <span>⚡</span> Connect to Claude
+      </button>
+      <div class="claude-config-panel" id="claudeConfig">
+        <div class="cfg-label">Add to claude_desktop_config.json</div>
+        <pre id="claudeConfigJson"></pre>
+        <button class="copy-cfg-btn" onclick="copyClaudeConfig()">Copy to clipboard</button>
+      </div>
+    </div>
+
+    <!-- Provider -->
+    <div class="sidebar-section">
+      <div class="slabel"><span class="slabel-dot"></span>LLM Provider</div>
+      <div class="provider-row">
+        <div class="pb on" data-p="openai" onclick="setProv('openai')">OpenAI</div>
+        <div class="pb" data-p="anthropic" onclick="setProv('anthropic')">Anthropic</div>
+      </div>
+    </div>
+
+    <!-- API Key -->
+    <div class="sidebar-section">
+      <div class="slabel"><span class="slabel-dot"></span>API Key</div>
+      <div class="field">
+        <input id="apiKey" type="password" placeholder="sk-… (or set on server)" autocomplete="off"/>
+        <button class="eye" onclick="toggleEye()">👁</button>
+      </div>
+    </div>
+
+    <!-- Base URL -->
+    <div class="sidebar-section">
+      <div class="slabel"><span class="slabel-dot"></span>Base URL <span style="color:#2d3149;font-weight:400;margin-left:4px">optional</span></div>
+      <div class="field">
+        <input id="baseUrl" type="text" placeholder="https://api.openai.com/v1" style="padding-right:10px"/>
+      </div>
+    </div>
+
+    <!-- Model -->
+    <div class="sidebar-section">
+      <div class="slabel"><span class="slabel-dot"></span>Model</div>
+      <div class="field">
+        <input id="modelSel" list="modelList" placeholder="gpt-4o" style="padding-right:10px"/>
+        <datalist id="modelList"></datalist>
+      </div>
+    </div>
+
+    <!-- Custom Headers -->
+    <div class="sidebar-section">
+      <div class="collapse-header" onclick="toggleHeaders()">
+        <div class="slabel" style="margin-bottom:0"><span class="slabel-dot"></span>Custom Headers</div>
+        <span class="collapse-arrow" id="headersArrow">▶</span>
+      </div>
+      <div class="collapse-body" id="headersPanel">
+        <div style="font-size:10px;color:#2d3149;margin-bottom:2px">For enterprise LLM gateways</div>
+        <div id="headersList">
+          <div class="header-row" style="margin-bottom:4px">
+            <input class="header-key" placeholder="Header name"/>
+            <input class="header-val" placeholder="Value"/>
+          </div>
+        </div>
+        <button class="add-header-btn" onclick="addHeaderRow()">+ Add header</button>
+      </div>
+    </div>
+
+    <!-- Tools -->
+    <div class="tools-section">
+      <div class="slabel"><span class="slabel-dot"></span>Registered Tools</div>
+      <div class="tools-scroll" id="toolsList">
+        <div class="hint">Loading tools…</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <div class="trace" id="trace">
+      <div class="trace-empty" id="emptyState">
+        <div class="empty-icon">⚡</div>
+        <div class="empty-title">Ready to test your MCP tools</div>
+        <div class="empty-sub">Type a prompt below — the LLM will pick the right tool and call it live</div>
+        <div class="empty-chips" id="quickChips"></div>
+      </div>
+    </div>
+    <div class="ibar">
+      <textarea id="prompt" rows="1" placeholder="Ask something or describe what you want to do…"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <div class="asst-toggle on" id="asstToggle" onclick="toggleAssistant()"
+           title="When on, the LLM explains the result. When off, raw tool output only.">
+        <span class="tlabel">Assistant</span>
+        <span class="switch"></span>
+      </div>
+      <button class="run-btn" id="runBtn" onclick="run()">Run ▶</button>
+    </div>
+  </main>
+</div>
+
+<script>
+const SERVER_CONFIG = __SERVER_CONFIG__;
+
+const MODELS = {
+  openai:    ["gpt-4o","gpt-4o-mini","gpt-4-turbo","gpt-3.5-turbo"],
+  anthropic: ["claude-sonnet-4-20250514","claude-opus-4-20250514","claude-haiku-4-5-20251001"]
+};
+
+let provider = SERVER_CONFIG.provider || "openai";
+let assistantOn = true;
+
+function toggleAssistant() {
+  assistantOn = !assistantOn;
+  document.getElementById("asstToggle").classList.toggle("on", assistantOn);
+}
+
+// Pre-fill from server config — api_key is never sent to the browser
+if (SERVER_CONFIG.base_url) document.getElementById("baseUrl").value = SERVER_CONFIG.base_url;
+document.getElementById("serverBadge").textContent =
+  window.location.origin + (SERVER_CONFIG.mcp_path || "/mcp");
+
+// ── Provider ──────────────────────────────────────────────────────────────────
+function setProv(p) {
+  provider = p;
+  document.querySelectorAll(".pb").forEach(b => b.classList.toggle("on", b.dataset.p === p));
+  const input    = document.getElementById("modelSel");
+  const datalist = document.getElementById("modelList");
+  const list     = MODELS[p];
+  const def      = list.includes(SERVER_CONFIG.model) ? SERVER_CONFIG.model : list[0];
+  datalist.innerHTML = list.map(m => `<option value="${m}">`).join("");
+  if (!input.value || list.includes(input.value) || Object.values(MODELS).flat().includes(input.value)) {
+    input.value = def;
+  }
+  document.getElementById("apiKey").placeholder =
+    SERVER_CONFIG.api_key_configured ? "set on server ✓" : (p === "openai" ? "sk-…" : "sk-ant-…");
+}
+
+function toggleEye() {
+  const el = document.getElementById("apiKey");
+  el.type = el.type === "password" ? "text" : "password";
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 120) + "px";
+}
+
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); run(); }
+}
+
+// ── Load tools ────────────────────────────────────────────────────────────────
+async function loadTools() {
+  try {
+    const res  = await fetch("/mcpark/tools", { method: "POST" });
+    const data = await res.json();
+    const list = document.getElementById("toolsList");
+    const chips = document.getElementById("quickChips");
+
+    if (!data.tools?.length) {
+      list.innerHTML = '<div class="hint">No tools registered.</div>';
+      return;
+    }
+
+    list.innerHTML = data.tools.map(t => {
+      const params = Object.keys(t.inputSchema?.properties || {});
+      return `<div class="tool-card" onclick="fillPrompt('${t.name}')">
+        <div class="tool-name">${t.name}</div>
+        <div class="tool-desc">${t.description || "No description"}</div>
+        ${params.length ? `<div class="tool-params">${params.map(p=>`<span class="param">${p}</span>`).join("")}</div>` : ""}
+      </div>`;
+    }).join("");
+
+    // Quick chips on empty state
+    if (chips) {
+      chips.innerHTML = data.tools.slice(0,4).map(t =>
+        `<div class="empty-chip" onclick="fillPrompt('${t.name}')">Try ${t.name}</div>`
+      ).join("");
+    }
+
+  } catch(e) {
+    document.getElementById("toolsList").innerHTML =
+      `<div class="hint" style="color:#ef4444">Failed to load tools</div>`;
+    document.getElementById("statusDot").style.background = "#ef4444";
+    document.getElementById("statusDot").style.boxShadow  = "0 0 6px rgba(239,68,68,.6)";
+    document.getElementById("statusTxt").textContent = "disconnected";
+  }
+}
+
+// ── Trace helpers ─────────────────────────────────────────────────────────────
+function addBlock(type, label, content, code) {
+  document.getElementById("emptyState")?.remove();
+  const trace = document.getElementById("trace");
+  const d = document.createElement("div");
+  d.className = `block ${type}`;
+  d.innerHTML = `<div class="blabel">${label}</div><div>${content}</div>
+    ${code ? `<pre class="code">${esc(code)}</pre>` : ""}`;
+  trace.appendChild(d);
+  trace.scrollTop = trace.scrollHeight;
+  return d;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function addVerdict(pass) {
+  const trace = document.getElementById("trace");
+  const d = document.createElement("div");
+  d.className = "block assistant";
+  d.innerHTML = `<div class="blabel">Result</div>
+    <span class="verdict ${pass?"pass":"fail"}">${pass?"✓ Tools called successfully":"✗ No tools were called"}</span>`;
+  trace.appendChild(d);
+  trace.scrollTop = trace.scrollHeight;
+}
+
+function fillPrompt(name) {
+  document.getElementById("prompt").value = `Use the ${name} tool`;
+  document.getElementById("prompt").focus();
+  autoResize(document.getElementById("prompt"));
+}
+
+// ── Run ───────────────────────────────────────────────────────────────────────
+async function run() {
+  const prompt  = document.getElementById("prompt").value.trim();
+  const apiKey  = document.getElementById("apiKey").value.trim();
+  const model   = document.getElementById("modelSel").value;
+  const baseUrl = document.getElementById("baseUrl").value.trim();
+  if (!prompt) return;
+
+  document.getElementById("runBtn").disabled = true;
+  document.getElementById("runBtn").innerHTML = '<span class="spin"></span>';
+  addBlock("user", "You", esc(prompt));
+  const thinking = addBlock("thinking", "", '<span class="spin"></span>&nbsp; Thinking…');
+
+  try {
+    const res  = await fetch("/mcpark/run", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        prompt, api_key: apiKey||null, provider, model,
+        base_url: baseUrl||null, default_headers: getHeaders(),
+        assistant: assistantOn,
+      })
+    });
+    const data = await res.json();
+    thinking.remove();
+
+    if (data.error) {
+      addBlock("error", "Error", esc(data.error));
+    } else {
+      for (const step of data.trace) {
+        if (step.type === "tool_call")
+          addBlock("tool-call", `🔧 ${step.name}`, "Arguments",
+                   JSON.stringify(step.arguments, null, 2));
+        else if (step.type === "tool_result") {
+          const result = typeof step.result === "string"
+            ? step.result : JSON.stringify(step.result, null, 2);
+          const fileInfo = extractFileUrl(result);
+          if (fileInfo) {
+            const block = addBlock("tool-result", `📦 ${step.name}`, "File returned");
+            renderFile(block, fileInfo);
+          } else {
+            addBlock("tool-result", `📦 ${step.name}`, "Output", result);
+          }
+        }
+        else if (step.type === "message" && step.content)
+          addBlock("assistant", "Assistant", esc(step.content));
+      }
+      addVerdict(data.tools_called);
+    }
+  } catch(e) {
+    thinking.remove();
+    addBlock("error", "Error", esc("Request failed: " + e.message));
+  }
+
+  document.getElementById("runBtn").disabled = false;
+  document.getElementById("runBtn").innerHTML = "Run ▶";
+  document.getElementById("prompt").value = "";
+  document.getElementById("prompt").style.height = "auto";
+}
+
+// ── Claude config ─────────────────────────────────────────────────────────────
+function showClaudeConfig() {
+  const url   = window.location.origin + (SERVER_CONFIG.mcp_path||"/mcp") + "/mcp";
+  const title = SERVER_CONFIG.title || "simcpi";
+  const port  = window.location.port || "8000";
+  const cfg   = { mcpServers: { [`${title}:${port}`]: { command:"npx", args:["mcp-remote", url] } } };
+  document.getElementById("claudeConfigJson").textContent = JSON.stringify(cfg, null, 2);
+  const el = document.getElementById("claudeConfig");
+  el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
+function copyClaudeConfig() {
+  navigator.clipboard.writeText(document.getElementById("claudeConfigJson").textContent).then(() => {
+    const btn = event.target;
+    btn.textContent = "Copied ✓";
+    setTimeout(() => btn.textContent = "Copy to clipboard", 2000);
+  });
+}
+
+// ── Headers ───────────────────────────────────────────────────────────────────
+let headersOpen = false;
+function toggleHeaders() {
+  headersOpen = !headersOpen;
+  document.getElementById("headersPanel").classList.toggle("open", headersOpen);
+  document.getElementById("headersArrow").classList.toggle("open", headersOpen);
+}
+function addHeaderRow() {
+  const row = document.createElement("div");
+  row.className = "header-row";
+  row.style.marginBottom = "4px";
+  row.innerHTML = `<input class="header-key" placeholder="Header name"/>
+                   <input class="header-val" placeholder="Value"/>`;
+  document.getElementById("headersList").appendChild(row);
+}
+function getHeaders() {
+  const headers = {};
+  document.querySelectorAll(".header-row").forEach(row => {
+    const k = row.querySelector(".header-key").value.trim();
+    const v = row.querySelector(".header-val").value.trim();
+    if (k && v) headers[k] = v;
+  });
+  return Object.keys(headers).length ? headers : null;
+}
+
+// ── File rendering ────────────────────────────────────────────────────────────
+function extractFileUrl(text) {
+  const m = text.match(/https?:\/\/[^\s"']+\/files\/[a-f0-9]+\/([^\s"']+)/i);
+  return m ? { url: m[0], filename: m[1] } : null;
+}
+
+function renderFile(block, { url, filename }) {
+  const ext = filename.split(".").pop().toLowerCase();
+  const dlBtn = document.createElement("a");
+  dlBtn.className = "download-btn";
+  dlBtn.href = url; dlBtn.download = filename;
+  dlBtn.innerHTML = `⬇ Download ${filename}`;
+
+  if (["png","jpg","jpeg","gif","webp","svg"].includes(ext)) {
+    const wrap = document.createElement("div");
+    wrap.className = "file-preview";
+    const img = document.createElement("img");
+    img.src = url; img.alt = filename;
+    wrap.appendChild(img);
+    block.appendChild(wrap);
+    block.appendChild(dlBtn);
+
+  } else if (ext === "pdf") {
+    const wrap = document.createElement("div");
+    wrap.className = "file-preview";
+    const iframe = document.createElement("iframe");
+    iframe.src = url; iframe.title = filename;
+    wrap.appendChild(iframe);
+    block.appendChild(wrap);
+    block.appendChild(dlBtn);
+
+  } else if (["xlsx","xls","csv"].includes(ext)) {
+    block.appendChild(dlBtn);
+    const tableWrap = document.createElement("div");
+    tableWrap.className = "file-preview";
+    tableWrap.innerHTML = `<div style="padding:12px;color:#374151;font-size:11px">Loading preview…</div>`;
+    block.appendChild(tableWrap);
+
+    fetch(url).then(r => r.arrayBuffer()).then(buf => {
+      const wb   = XLSX.read(buf, { type:"array" });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header:1 });
+      if (!rows.length) { tableWrap.innerHTML = `<div style="padding:12px;color:#374151;font-size:11px">Empty sheet</div>`; return; }
+      const headers = rows[0];
+      const data    = rows.slice(1, 51);
+      tableWrap.innerHTML = `
+        <div style="overflow-x:auto;max-height:300px;overflow-y:auto">
+          <table>
+            <thead><tr>${headers.map(h=>`<th>${esc(String(h??""))}</th>`).join("")}</tr></thead>
+            <tbody>${data.map(row=>`<tr>${headers.map((_,i)=>`<td>${esc(String(row[i]??""))}</td>`).join("")}</tr>`).join("")}</tbody>
+          </table>
+        </div>
+        ${rows.length>51?`<div style="padding:6px 10px;font-size:10px;color:#374151">${rows.length-1} rows total · showing first 50</div>`:""}`;
+    }).catch(() => {
+      tableWrap.innerHTML = `<div style="padding:12px;color:#ef4444;font-size:11px">Preview failed — use download button</div>`;
+    });
+
+  } else {
+    block.appendChild(dlBtn);
+  }
+}
+
+// init
+setProv(provider);
+loadTools();
+</script>
+</body>
+</html>
