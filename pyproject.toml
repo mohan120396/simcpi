@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simcpi"
-version = "0.3.0"
+version = "0.3.1"
 description = "One decorator. REST endpoint + MCP tool. Built-in UI, file serving, and LLM client."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -52,8 +52,8 @@ all = [
 
 [project.urls]
 Homepage    = "https://pypi.org/project/simcpi/"
-Source      = "https://github.com/mohanmusunuri/simcpi"
-"Bug Tracker" = "https://github.com/mohanmusunuri/simcpi/issues"
+Source      = "https://github.com/mohan120396/simcpi"
+"Bug Tracker" = "https://github.com/mohan120396/simcpi/issues"
 
 [tool.setuptools]
 include-package-data = true
