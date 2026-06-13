@@ -4,3 +4,5 @@ __pycache__/
 dist/
 *.egg-info/
 .claude/
+scratch/
+simcpi_feedback.db

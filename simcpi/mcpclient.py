@@ -186,6 +186,7 @@ class MCPClient:
     system:      Optional system prompt.
     timeout:     HTTP timeout in seconds (default 30).
     base_url:    Custom LLM endpoint e.g. AICredits, OpenRouter.
+    auth_token:  Bearer token for MCP servers started with MCPApi(auth_token=...).
     """
 
     DEFAULTS = {
@@ -203,6 +204,7 @@ class MCPClient:
         timeout:         int = 30,
         base_url:        str | None = None,
         default_headers: dict | None = None,
+        auth_token:      str | None = None,
     ):
         self.mcp_server      = mcp_server
         self.provider        = provider
@@ -212,9 +214,15 @@ class MCPClient:
         self.timeout         = timeout
         self.base_url        = base_url
         self.default_headers = default_headers
+        self.auth_token      = auth_token
 
     def _transport(self):
         if isinstance(self.mcp_server, str):
+            if self.auth_token:
+                return StreamableHttpTransport(
+                    self.mcp_server,
+                    headers={"Authorization": f"Bearer {self.auth_token}"},
+                )
             return StreamableHttpTransport(self.mcp_server)
         return self.mcp_server
 
@@ -366,6 +374,7 @@ class QuickClient:
     timeout:     HTTP timeout in seconds (default 30).
     base_url:    Custom LLM endpoint e.g. AICredits, OpenRouter.
     default_headers: Extra HTTP headers for the LLM request.
+    auth_token:  Bearer token for MCP servers started with MCPApi(auth_token=...).
     """
 
     DEFAULTS = {
@@ -383,6 +392,7 @@ class QuickClient:
         timeout:         int = 30,
         base_url:        str | None = None,
         default_headers: dict | None = None,
+        auth_token:      str | None = None,
     ):
         self._servers        = mcp_server if isinstance(mcp_server, list) else [mcp_server]
         self.provider        = provider
@@ -392,9 +402,16 @@ class QuickClient:
         self.timeout         = timeout
         self.base_url        = base_url
         self.default_headers = default_headers
+        self.auth_token      = auth_token
 
     def _transport(self, server):
-        return StreamableHttpTransport(server) if isinstance(server, str) else server
+        if isinstance(server, str):
+            if self.auth_token:
+                return StreamableHttpTransport(
+                    server, headers={"Authorization": f"Bearer {self.auth_token}"}
+                )
+            return StreamableHttpTransport(server)
+        return server
 
     async def _fetch_all_tools(self) -> tuple[list[dict], dict[str, object]]:
         tools, tool_map = [], {}

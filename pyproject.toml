@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simcpi"
-version = "0.3.1"
+version = "0.4.0"
 description = "One decorator. REST endpoint + MCP tool. Built-in UI, file serving, and LLM client."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -31,7 +31,7 @@ classifiers = [
 
 dependencies = [
   "fastapi>=0.100.0",
-  "fastmcp==3.2.4",
+  "fastmcp>=3.2",
   "pydantic>=2.0.0",
   "uvicorn>=0.20.0",
   "openai>=1.0.0",
@@ -50,6 +50,9 @@ all = [
   "matplotlib>=3.5.0",
 ]
 
+[project.scripts]
+mcpark = "simcpi.__main__:main"
+
 [project.urls]
 Homepage    = "https://pypi.org/project/simcpi/"
 Source      = "https://github.com/mohan120396/simcpi"
@@ -62,4 +65,4 @@ include-package-data = true
 where = ["."]
 
 [tool.setuptools.package-data]
-simcpi = ["static/*.html"]
+simcpi = ["static/*.html", "SKILL.md"]

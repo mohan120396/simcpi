@@ -15,13 +15,22 @@ header{display:flex;align-items:center;gap:12px;padding:0 20px;height:52px;
        flex-shrink:0;backdrop-filter:blur(10px);position:relative;z-index:10}
 .logo{width:28px;height:28px;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
       border-radius:7px;display:flex;align-items:center;justify-content:center;
-      font-size:13px;font-weight:800;color:#fff;box-shadow:0 0 12px rgba(99,102,241,.4)}
-header h1{font-size:14px;font-weight:700;color:#f1f5f9;letter-spacing:-.01em}
+      font-size:13px;font-weight:800;color:#fff;box-shadow:0 0 12px rgba(99,102,241,.4);
+      animation:logoGlow 3.5s ease-in-out infinite}
+@keyframes logoGlow{0%,100%{box-shadow:0 0 12px rgba(99,102,241,.4)}
+                    50%{box-shadow:0 0 22px rgba(139,92,246,.65)}}
+header h1{font-size:14px;font-weight:700;letter-spacing:-.01em;
+          background:linear-gradient(90deg,#f1f5f9 30%,#a5b4fc);
+          -webkit-background-clip:text;background-clip:text;
+          -webkit-text-fill-color:transparent;color:#f1f5f9}
 header .sep{color:#1e2235;font-size:18px;margin:0 2px}
 header .sub{font-size:12px;color:#4a5568;font-weight:500}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#10b981;
-            box-shadow:0 0 6px rgba(16,185,129,.6);flex-shrink:0}
+            box-shadow:0 0 6px rgba(16,185,129,.6);flex-shrink:0;
+            animation:beat 2.4s ease-in-out infinite}
+@keyframes beat{0%,100%{box-shadow:0 0 4px rgba(16,185,129,.45)}
+                50%{box-shadow:0 0 11px rgba(16,185,129,.9)}}
 .status-txt{font-size:11px;color:#4a5568}
 nav{display:flex;gap:4px;margin-left:16px}
 nav a{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;
@@ -40,12 +49,12 @@ aside{background:#0c0f1a;border-right:1px solid #1e2235;
         text-transform:uppercase;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .slabel-dot{width:4px;height:4px;border-radius:50%;background:#6366f1}
 
-/* Server badge */
-.server-badge{font-size:11px;font-family:monospace;background:#0f1117;
-              color:#818cf8;border:1px solid #1e2235;border-radius:6px;
-              padding:6px 10px;word-break:break-all;display:flex;align-items:center;gap:6px}
-.server-badge .dot{width:6px;height:6px;border-radius:50%;background:#10b981;flex-shrink:0;
-                   box-shadow:0 0 5px rgba(16,185,129,.5)}
+/* Server mode pill */
+.server-mode{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.08em;
+             padding:2px 8px;border-radius:10px;text-transform:uppercase;
+             background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25)}
+.server-mode.remote{background:rgba(56,189,248,.12);color:#38bdf8;
+                    border-color:rgba(56,189,248,.3)}
 
 /* Provider toggle */
 .provider-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -126,16 +135,21 @@ aside{background:#0c0f1a;border-right:1px solid #1e2235;
 /* ── Main chat area ── */
 main{display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#080b12}
 .trace{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;
-       gap:16px;min-height:0}
+       gap:16px;min-height:0;scroll-behavior:smooth;
+       background:
+         radial-gradient(ellipse 65% 45% at 75% -5%,rgba(99,102,241,.06),transparent 65%),
+         radial-gradient(ellipse 55% 40% at 15% 105%,rgba(139,92,246,.05),transparent 65%)}
 
 /* Empty state */
 .trace-empty{flex:1;display:flex;flex-direction:column;align-items:center;
              justify-content:center;gap:0;color:#1a1d2e;padding-bottom:40px}
 .empty-icon{width:56px;height:56px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));
             border:1px solid rgba(99,102,241,.2);border-radius:16px;
-            display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
-.empty-title{font-size:15px;font-weight:600;color:#2d3149;margin-bottom:6px}
-.empty-sub{font-size:12px;color:#1e2235;text-align:center;line-height:1.6;max-width:280px}
+            display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;
+            animation:float 3.6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.empty-title{font-size:15px;font-weight:600;color:#4a5568;margin-bottom:6px}
+.empty-sub{font-size:12px;color:#2d3149;text-align:center;line-height:1.6;max-width:280px}
 .empty-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
 .empty-chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;
             background:#0f1117;border:1px solid #1e2235;color:#374151;cursor:pointer;
@@ -144,8 +158,8 @@ main{display:flex;flex-direction:column;overflow:hidden;min-height:0;background:
 
 /* Message blocks */
 .block{border-radius:10px;padding:13px 16px;font-size:13px;line-height:1.65;
-       border:1px solid transparent;animation:pop .18s ease}
-@keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+       border:1px solid transparent;animation:pop .32s cubic-bezier(.21,1.02,.73,1)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
 .block.user{background:#111422;border-color:#1e2235;align-self:flex-end;
             max-width:70%;border-bottom-right-radius:3px}
 .block.thinking{background:#0c0f1a;border-color:#1a1d2e;color:#374151;
@@ -177,18 +191,22 @@ pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
 
 /* ── Input bar ── */
 .ibar{border-top:1px solid #1a1d2e;padding:14px 20px;background:#0c0f1a;
-      display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
-.ibar textarea{flex:1;background:#0f1117;border:1px solid #1e2235;border-radius:9px;
+      display:flex;gap:10px;align-items:flex-end;flex-shrink:0;flex-wrap:wrap}
+.ibar textarea{flex:1 1 240px;min-width:240px;background:#0f1117;border:1px solid #1e2235;
+               border-radius:9px;
                color:#e2e8f0;font-size:13px;padding:10px 14px;resize:none;outline:none;
                line-height:1.5;min-height:44px;max-height:120px;font-family:inherit;
-               transition:border-color .15s}
-.ibar textarea:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+               transition:border-color .15s,box-shadow .15s}
+.ibar textarea:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.08),
+                     0 0 24px rgba(99,102,241,.08)}
 .ibar textarea::placeholder{color:#2d3149}
-.run-btn{padding:10px 22px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;
+.run-btn{padding:10px 22px;background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#4f46e5 100%);
+         background-size:200% 200%;background-position:0% 0%;color:#fff;
          border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;
-         transition:all .2s;white-space:nowrap;height:44px;
+         transition:all .25s;white-space:nowrap;height:44px;
          box-shadow:0 2px 12px rgba(99,102,241,.3)}
-.run-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(99,102,241,.4)}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,.45);
+               background-position:100% 100%}
 .run-btn:active{transform:translateY(0)}
 .run-btn:disabled{background:#1a1d2e;color:#374151;cursor:not-allowed;
                   box-shadow:none;transform:none}
@@ -197,6 +215,7 @@ pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── Assistant toggle ── */
+.ibar-controls{display:flex;gap:10px;align-items:flex-end;flex-shrink:0;margin-left:auto}
 .asst-toggle{display:flex;align-items:center;gap:7px;user-select:none;cursor:pointer;
              padding:0 4px;height:44px;flex-shrink:0}
 .asst-toggle .tlabel{font-size:11px;font-weight:600;color:#4a5568;white-space:nowrap;transition:color .15s}
@@ -225,11 +244,87 @@ pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
               text-decoration:none;transition:all .15s}
 .download-btn:hover{border-color:#6366f1;color:#a5b4fc}
 
+/* Generate tests button */
+.gen-btn{width:100%;margin-top:10px;padding:7px;border-radius:7px;font-size:12px;
+  font-weight:600;cursor:pointer;border:1px solid #1e2235;background:#0f1117;
+  color:#818cf8;transition:all .2s;display:flex;align-items:center;
+  justify-content:center;gap:6px;font-family:inherit}
+.gen-btn:hover{border-color:#6366f1;box-shadow:0 0 12px rgba(99,102,241,.15);color:#a5b4fc}
+.gen-btn:disabled{color:#374151;cursor:not-allowed;box-shadow:none;border-color:#1e2235}
+
+/* Test case chips */
+.test-chip{padding:8px 10px;border-radius:7px;font-size:11px;background:#0f1117;
+  border:1px solid #1a1d2e;color:#64748b;cursor:pointer;transition:all .2s;
+  text-align:left;width:100%;font-family:inherit;line-height:1.4}
+.test-chip:hover{border-color:#6366f1;color:#a5b4fc;background:#111422}
+.test-chip .tc-tool{font-size:10px;color:#4f46e5;font-weight:700;margin-bottom:3px;
+  font-family:monospace;text-transform:uppercase;letter-spacing:.05em}
+
+/* ── Docstring optimizer ── */
+.block.opt{background:#0d0a18;border-color:#241a3a;border-left:3px solid #a78bfa}
+.block.opt .blabel{color:#a78bfa}
+.opt-score{font-size:12px;font-weight:700;margin:4px 0}
+.opt-score.up{color:#4ade80}.opt-score.flat{color:#94a3b8}.opt-score.down{color:#f59e0b}
+.opt-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.opt-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid #1e2235;background:#0f1117;color:#a5b4fc;font-family:inherit;transition:all .15s}
+.opt-btn:hover{border-color:#8b5cf6}
+.opt-btn:disabled{color:#374151;cursor:default;border-color:#1e2235}
+
+/* ── Feedback memory ── */
+.block.memory{background:#0a0d18;border-color:#15203a;border-left:3px solid #38bdf8}
+.block.memory .blabel{color:#38bdf8}
+.mem-list{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.mem-item{display:flex;align-items:center;gap:8px;font-size:11px;
+          background:#0f1117;border:1px solid #1a1d2e;border-radius:6px;padding:5px 9px}
+.mem-rate{flex-shrink:0}
+.mem-rate.pos{filter:none}
+.mem-prompt{flex:1;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mem-sim{flex-shrink:0;font-family:monospace;color:#475569;font-size:10px}
+
+.rating-block{background:#0c0f1a;border-color:#1a1d2e;border-left:3px solid #f59e0b}
+.rating-block .blabel{color:#f59e0b}
+.rate-row{display:flex;gap:8px;margin-top:4px}
+.rate-btn{padding:6px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;
+          border:1px solid #1e2235;background:#0f1117;color:#94a3b8;transition:all .15s}
+.rate-btn:hover:not(:disabled){border-color:#6366f1;color:#e2e8f0}
+.rate-btn.chosen{border-color:transparent}
+.rate-btn.up.chosen{background:rgba(16,185,129,.18);color:#10b981}
+.rate-btn.down.chosen{background:rgba(239,68,68,.18);color:#ef4444}
+.rate-btn:disabled{cursor:default;opacity:.55}
+.rate-note{width:100%;margin-top:8px;background:#0f1117;border:1px solid #1e2235;
+           border-radius:7px;color:#e2e8f0;font-size:12px;padding:7px 10px;outline:none;
+           font-family:inherit;transition:border-color .15s}
+.rate-note:focus{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.1)}
+.rate-note::placeholder{color:#374151}
+.rate-note:disabled{opacity:.5}
+
 /* Scrollbar */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#1e2235;border-radius:4px}
 ::-webkit-scrollbar-thumb:hover{background:#2d3149}
+
+::selection{background:rgba(99,102,241,.35);color:#f1f5f9}
+
+/* ── Responsive — stack sidebar above main on small screens ── */
+@media (max-width:700px){
+  .wrap{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{max-height:40vh;border-right:none;border-bottom:1px solid #1e2235}
+  .block.user{max-width:92%}
+  .trace{padding:16px}
+  header{padding:0 12px;gap:8px}
+  header .sep,header .sub{display:none}
+  nav{margin-left:6px}
+  nav a{padding:5px 9px;white-space:nowrap}
+  .status-txt{display:none}
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .trace{scroll-behavior:auto}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -255,11 +350,20 @@ pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
 
     <!-- Server -->
     <div class="sidebar-section">
-      <div class="slabel"><span class="slabel-dot"></span>MCP Server</div>
-      <div class="server-badge">
-        <span class="dot"></span>
-        <span id="serverBadge">loading…</span>
+      <div class="slabel"><span class="slabel-dot"></span>MCP Server
+        <span class="server-mode" id="serverMode">local</span></div>
+      <div class="field">
+        <input id="mcpUrl" type="text" spellcheck="false"
+               style="padding-right:10px;font-family:monospace;font-size:11px"
+               placeholder="http://host:port/mcp/mcp"/>
       </div>
+      <div class="field" style="margin-top:6px">
+        <input id="mcpAuth" type="password" placeholder="Bearer token (optional)"
+               style="padding-right:10px" autocomplete="off"/>
+      </div>
+      <button class="connect-btn" style="margin-top:8px" onclick="connectServer()">
+        🔌 Connect
+      </button>
     </div>
 
     <!-- Connect to Claude -->
@@ -272,6 +376,15 @@ pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
         <div class="cfg-label">Add to claude_desktop_config.json</div>
         <pre id="claudeConfigJson"></pre>
         <button class="copy-cfg-btn" onclick="copyClaudeConfig()">Copy to clipboard</button>
+      </div>
+      <a class="connect-btn" style="margin-top:8px;text-decoration:none"
+         href="/mcpark/skill" download="SKILL.md"
+         title="Download the simcpi skill so your Claude learns the library">
+        <span>📚</span> Connect Skill to Claude
+      </a>
+      <div style="font-size:10px;color:#374151;margin-top:6px;line-height:1.5">
+        Drop the file in <code style="color:#64748b">~/.claude/skills/simcpi/</code>
+        (Claude Code), or upload it via Settings → Features (claude.ai).
       </div>
     </div>
 
@@ -334,6 +447,17 @@ pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
       <div class="tools-scroll" id="toolsList">
         <div class="hint">Loading tools…</div>
       </div>
+      <button class="gen-btn" id="genBtn" onclick="generateTests()">✨ Generate Test Cases</button>
+      <button class="gen-btn" id="optBtn" onclick="improveDocstrings()" style="display:none"
+              title="Rewrites tool descriptions and scores them against your 👍/👎 rated runs">📝 Improve Docstrings</button>
+      <button class="gen-btn" id="dbBtn" onclick="viewFeedbackDb()" style="display:none"
+              title="Browse the raw feedback SQLite table (simcpi_feedback.db)">🗄 View Feedback DB</button>
+    </div>
+
+    <!-- Generated test cases -->
+    <div class="sidebar-section" id="genSection" style="display:none">
+      <div class="slabel"><span class="slabel-dot"></span>Test Cases</div>
+      <div style="display:flex;flex-direction:column;gap:5px" id="genList"></div>
     </div>
 
   </aside>
@@ -350,12 +474,19 @@ pre.code{font-family:"JetBrains Mono","Fira Code",monospace;font-size:11px;
     <div class="ibar">
       <textarea id="prompt" rows="1" placeholder="Ask something or describe what you want to do…"
         onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-      <div class="asst-toggle on" id="asstToggle" onclick="toggleAssistant()"
-           title="When on, the LLM explains the result. When off, raw tool output only.">
-        <span class="tlabel">Assistant</span>
-        <span class="switch"></span>
+      <div class="ibar-controls">
+        <div class="asst-toggle on" id="memToggle" onclick="toggleMemory()" style="display:none"
+             title="Feedback memory: inject similar past rated requests as hints to the model.">
+          <span class="tlabel">Memory</span>
+          <span class="switch"></span>
+        </div>
+        <div class="asst-toggle on" id="asstToggle" onclick="toggleAssistant()"
+             title="When on, the LLM explains the result. When off, raw tool output only.">
+          <span class="tlabel">Assistant</span>
+          <span class="switch"></span>
+        </div>
+        <button class="run-btn" id="runBtn" onclick="run()">Run ▶</button>
       </div>
-      <button class="run-btn" id="runBtn" onclick="run()">Run ▶</button>
     </div>
   </main>
 </div>
@@ -365,21 +496,75 @@ const SERVER_CONFIG = __SERVER_CONFIG__;
 
 const MODELS = {
   openai:    ["gpt-4o","gpt-4o-mini","gpt-4-turbo","gpt-3.5-turbo"],
-  anthropic: ["claude-sonnet-4-20250514","claude-opus-4-20250514","claude-haiku-4-5-20251001"]
+  anthropic: ["claude-sonnet-4-6","claude-opus-4-8","claude-haiku-4-5-20251001"]
 };
 
 let provider = SERVER_CONFIG.provider || "openai";
 let assistantOn = true;
+let memoryOn = !!SERVER_CONFIG.feedback;
+
+// Stable per-browser session id, used to group feedback rows
+const SESSION_ID = (() => {
+  let s = localStorage.getItem("mcpark_session");
+  if (!s) { s = Math.random().toString(36).slice(2); localStorage.setItem("mcpark_session", s); }
+  return s;
+})();
 
 function toggleAssistant() {
   assistantOn = !assistantOn;
   document.getElementById("asstToggle").classList.toggle("on", assistantOn);
 }
 
+function toggleMemory() {
+  memoryOn = !memoryOn;
+  document.getElementById("memToggle").classList.toggle("on", memoryOn);
+}
+
+// Reveal the Memory toggle only when the server has feedback enabled
+if (SERVER_CONFIG.feedback) {
+  document.getElementById("memToggle").style.display = "flex";
+  document.getElementById("optBtn").style.display = "flex";
+  document.getElementById("dbBtn").style.display = "flex";
+}
+
 // Pre-fill from server config — api_key is never sent to the browser
 if (SERVER_CONFIG.base_url) document.getElementById("baseUrl").value = SERVER_CONFIG.base_url;
-document.getElementById("serverBadge").textContent =
-  window.location.origin + (SERVER_CONFIG.mcp_path || "/mcp");
+// ── MCP server target — this server by default, any remote via the sidebar ──
+const LOCAL_MCP_URL = window.location.origin + (SERVER_CONFIG.mcp_path || "/mcp") + "/mcp";
+let MCP_URL  = null;   // null → local (in-process); string → remote server
+let MCP_AUTH = null;
+
+document.getElementById("mcpUrl").value = LOCAL_MCP_URL;
+if (SERVER_CONFIG.remote && SERVER_CONFIG.remote.url) {
+  document.getElementById("mcpUrl").value  = SERVER_CONFIG.remote.url;
+  document.getElementById("mcpAuth").value = SERVER_CONFIG.remote.auth || "";
+  MCP_URL  = SERVER_CONFIG.remote.url;
+  MCP_AUTH = SERVER_CONFIG.remote.auth || null;
+}
+updateServerMode();
+
+function updateServerMode() {
+  const pill = document.getElementById("serverMode");
+  pill.textContent = MCP_URL ? "remote" : "local";
+  pill.classList.toggle("remote", !!MCP_URL);
+}
+
+function connectServer() {
+  const u = document.getElementById("mcpUrl").value.trim();
+  const a = document.getElementById("mcpAuth").value.trim();
+  MCP_URL  = (u && u !== LOCAL_MCP_URL) ? u : null;
+  MCP_AUTH = MCP_URL ? (a || null) : null;
+  updateServerMode();
+  document.getElementById("toolsList").innerHTML = '<div class="hint">Connecting…</div>';
+  loadTools();
+}
+
+function setStatus(ok) {
+  const dot = document.getElementById("statusDot");
+  dot.style.background = ok ? "#10b981" : "#ef4444";
+  dot.style.boxShadow  = ok ? "0 0 6px rgba(16,185,129,.6)" : "0 0 6px rgba(239,68,68,.6)";
+  document.getElementById("statusTxt").textContent = ok ? "connected" : "disconnected";
+}
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 function setProv(p) {
@@ -414,10 +599,19 @@ function handleKey(e) {
 // ── Load tools ────────────────────────────────────────────────────────────────
 async function loadTools() {
   try {
-    const res  = await fetch("/mcpark/tools", { method: "POST" });
+    const res  = await fetch("/mcpark/tools", { method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ mcp_url: MCP_URL, mcp_auth: MCP_AUTH }) });
     const data = await res.json();
     const list = document.getElementById("toolsList");
     const chips = document.getElementById("quickChips");
+
+    if (data.error) {
+      list.innerHTML = `<div class="hint" style="color:#ef4444">${esc(data.error)}</div>`;
+      setStatus(false);
+      return;
+    }
+    setStatus(true);
 
     if (!data.tools?.length) {
       list.innerHTML = '<div class="hint">No tools registered.</div>';
@@ -443,9 +637,7 @@ async function loadTools() {
   } catch(e) {
     document.getElementById("toolsList").innerHTML =
       `<div class="hint" style="color:#ef4444">Failed to load tools</div>`;
-    document.getElementById("statusDot").style.background = "#ef4444";
-    document.getElementById("statusDot").style.boxShadow  = "0 0 6px rgba(239,68,68,.6)";
-    document.getElementById("statusTxt").textContent = "disconnected";
+    setStatus(false);
   }
 }
 
@@ -482,6 +674,206 @@ function fillPrompt(name) {
   autoResize(document.getElementById("prompt"));
 }
 
+// ── Feedback rating ─────────────────────────────────────────────────────────
+function addRating(callId) {
+  const trace = document.getElementById("trace");
+  const d = document.createElement("div");
+  d.className = "block rating-block";
+  d.innerHTML = `<div class="blabel">Did this do what you wanted?</div>
+    <div class="rate-row">
+      <button class="rate-btn up"   onclick="submitRating('${callId}',1,this)">👍 Yes</button>
+      <button class="rate-btn down" onclick="submitRating('${callId}',0,this)">👎 No</button>
+    </div>
+    <input class="rate-note" type="text" maxlength="200"
+      placeholder="Optional: why? (e.g. 'wanted Telugu, got Hindi') — improves docstring rewrites"/>`;
+  trace.appendChild(d);
+  trace.scrollTop = trace.scrollHeight;
+}
+
+async function submitRating(callId, rating, btn) {
+  const row   = btn.parentElement;
+  const card  = row.parentElement;
+  const label = card.querySelector(".blabel");
+  const noteEl = card.querySelector(".rate-note");
+  const note  = noteEl ? noteEl.value.trim() : "";
+  card.querySelectorAll(".rate-btn").forEach(b => b.disabled = true);
+  if (noteEl) noteEl.disabled = true;
+  btn.classList.add("chosen");
+  try {
+    const res = await fetch("/mcpark/rate", {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ call_id: callId, rating, note: note || null }),
+    });
+    if (!res.ok) throw new Error();
+    label.textContent = (rating ? "Thanks — saved 👍" : "Thanks — saved 👎")
+                      + (note ? " (reason noted)" : "");
+  } catch(e) {
+    card.querySelectorAll(".rate-btn").forEach(b => b.disabled = false);
+    if (noteEl) noteEl.disabled = false;
+    btn.classList.remove("chosen");
+    label.textContent = "Couldn't save rating — try again";
+  }
+}
+
+// ── Feedback DB viewer ────────────────────────────────────────────────────────
+async function viewFeedbackDb() {
+  const btn = document.getElementById("dbBtn");
+  btn.disabled = true;
+  try {
+    const res  = await fetch("/mcpark/feedback-rows?limit=100");
+    const data = await res.json();
+    if (data.error) { addBlock("error", "Error", esc(data.error)); return; }
+    const s = data.stats;
+    const block = addBlock("memory", "🗄 Feedback DB",
+      `<span style="font-family:monospace;font-size:11px">${esc(data.db)}</span><br>` +
+      `${s.total} calls · ${s.rated} rated · ${s.positive} 👍 · ${s.embedded} embedded`);
+    const wrap = document.createElement("div");
+    wrap.className = "file-preview";
+    wrap.style.marginTop = "10px";
+    const rows = data.rows.map(r => `<tr>
+        <td style="white-space:nowrap">${new Date(r.ts*1000).toLocaleString()}</td>
+        <td style="max-width:240px">${esc(r.prompt || "")}</td>
+        <td style="font-family:monospace">${esc((r.tool_calls||[]).map(t=>t.name).join(", "))}</td>
+        <td style="text-align:center">${r.rating==null ? "—" : (r.rating ? "👍" : "👎")}</td>
+        <td style="max-width:200px;color:#94a3b8">${esc(r.note || "")}</td>
+        <td style="text-align:center">${r.embedded ? "✓" : "—"}</td>
+      </tr>`).join("");
+    wrap.innerHTML = `<div style="overflow-x:auto;max-height:320px;overflow-y:auto"><table>
+        <thead><tr><th>time</th><th>prompt</th><th>tool calls</th><th>rating</th><th>reason</th><th>emb</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="6" style="text-align:center;color:#374151">no calls logged yet</td></tr>'}</tbody>
+      </table></div>`;
+    block.appendChild(wrap);
+    if (s.total > 0) {
+      const actions = document.createElement("div");
+      actions.className = "opt-actions";
+      actions.innerHTML = `<button class="opt-btn" style="border-color:#3a1a1a;color:#fca5a5"
+        onclick="clearFeedbackDb(this)">🗑 Clear DB (start fresh)</button>`;
+      block.appendChild(actions);
+    }
+  } catch(e) {
+    addBlock("error", "Error", esc("Request failed: " + e.message));
+  }
+  btn.disabled = false;
+}
+
+async function clearFeedbackDb(btn) {
+  if (!confirm("Delete ALL logged calls and ratings? This cannot be undone.\n\n"
+             + "Handy after improving docstrings — old ratings were against the "
+             + "old descriptions, so you may want to recollect fresh ones.")) return;
+  btn.disabled = true;
+  try {
+    const res = await fetch("/mcpark/feedback-clear", { method: "POST" });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || "failed");
+    btn.textContent = `✓ Cleared ${data.removed} row(s) — DB is fresh`;
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = "🗑 " + String(e.message).slice(0, 48);
+  }
+}
+
+// ── Docstring optimizer ──────────────────────────────────────────────────────
+let OPT_RESULTS = [];
+
+async function improveDocstrings() {
+  const btn = document.getElementById("optBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Optimizing…';
+  const apiKey  = document.getElementById("apiKey").value.trim();
+  const model   = document.getElementById("modelSel").value;
+  const baseUrl = document.getElementById("baseUrl").value.trim();
+  addBlock("user", "You", "📝 Improve docstrings — score rewrites against my 👍/👎 ratings");
+  const thinking = addBlock("thinking", "",
+    '<span class="spin"></span>&nbsp; Replaying rated prompts per tool — this makes several LLM calls…');
+  try {
+    const res = await fetch("/mcpark/optimize", {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ api_key: apiKey||null, provider, model,
+                             base_url: baseUrl||null, default_headers: getHeaders() })
+    });
+    const data = await res.json();
+    thinking.remove();
+    if (data.error) {
+      addBlock("error", "Error", esc(data.error));
+    } else {
+      OPT_RESULTS = data.results;
+      data.results.forEach((r, i) => renderOptResult(r, i));
+    }
+  } catch(e) {
+    thinking.remove();
+    addBlock("error", "Error", esc("Request failed: " + e.message));
+  }
+  btn.disabled = false;
+  btn.innerHTML = "📝 Improve Docstrings";
+}
+
+function renderOptResult(r, i) {
+  if (r.skipped) {
+    addBlock("opt", `📝 ${r.tool}`, `skipped — ${esc(r.skipped)}`);
+    return;
+  }
+  const pct   = x => Math.round(x*100) + "%";
+  const cls   = r.improved ? "up" : (r.candidate_score === r.current_score ? "flat" : "down");
+  const arrow = `${pct(r.current_score)} → ${pct(r.candidate_score)} on ${r.n_examples} rated prompts`;
+  const head  = r.improved   ? `✓ improved · ${arrow}`
+              : cls==="flat" ? `= no change · ${arrow}`
+              :                `✗ rewrite scored worse · ${arrow} — keeping yours`;
+  const block = addBlock("opt", `📝 ${r.tool}`,
+    `<div class="opt-score ${cls}">${head}</div>Proposed description:`, r.candidate);
+  const row = document.createElement("div");
+  row.className = "opt-actions";
+  // All three actions are always shown (Copy + the two write paths), so the
+  // capabilities are visible in any demo even when the rewrite isn't a win.
+  // When it's not an improvement the two write buttons are dimmed as a hint.
+  const dim = r.improved ? "" : ' style="opacity:.6"';
+  row.innerHTML =
+    `<button class="opt-btn" onclick="copyDocstring(${i}, this)">📋 Copy</button>` +
+    `<button class="opt-btn"${dim} onclick="applyDocstring(${i}, this)">⚡ Apply (live)</button>` +
+    `<button class="opt-btn"${dim} onclick="writeDocstring(${i}, this)" title="Write the new docstring straight into your .py file (localhost only)">💾 Write to source</button>`;
+  block.appendChild(row);
+}
+
+function copyDocstring(i, btn) {
+  navigator.clipboard.writeText(OPT_RESULTS[i].candidate)
+    .then(() => { btn.textContent = "✓ Copied"; setTimeout(() => btn.textContent = "📋 Copy", 1500); });
+}
+
+async function applyDocstring(i, btn) {
+  btn.disabled = true;
+  try {
+    const res = await fetch("/mcpark/apply-docstring", {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ tool: OPT_RESULTS[i].tool, description: OPT_RESULTS[i].candidate })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || "failed");
+    btn.textContent = "✓ Live (until restart)";
+    loadTools();
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = "⚡ Apply failed — copy instead";
+  }
+}
+
+async function writeDocstring(i, btn) {
+  btn.disabled = true;
+  btn.textContent = "💾 Writing…";
+  try {
+    const res = await fetch("/mcpark/write-docstring", {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ tool: OPT_RESULTS[i].tool, description: OPT_RESULTS[i].candidate })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || "failed");
+    const file = (data.file || "").split(/[\\/]/).pop();
+    btn.textContent = `✓ Written to ${file}:${data.line}`;
+    loadTools();
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = "💾 " + String(e.message).slice(0, 48);
+  }
+}
+
 // ── Run ───────────────────────────────────────────────────────────────────────
 async function run() {
   const prompt  = document.getElementById("prompt").value.trim();
@@ -503,6 +895,8 @@ async function run() {
         prompt, api_key: apiKey||null, provider, model,
         base_url: baseUrl||null, default_headers: getHeaders(),
         assistant: assistantOn,
+        memory: memoryOn, session_id: SESSION_ID,
+        mcp_url: MCP_URL, mcp_auth: MCP_AUTH,
       })
     });
     const data = await res.json();
@@ -512,24 +906,40 @@ async function run() {
       addBlock("error", "Error", esc(data.error));
     } else {
       for (const step of data.trace) {
-        if (step.type === "tool_call")
+        if (step.type === "memory") {
+          const block = addBlock("memory", "🧠 Recalled from feedback",
+            `${step.examples.length} similar past request(s) informed this run`);
+          const wrap = document.createElement("div");
+          wrap.className = "mem-list";
+          wrap.innerHTML = step.examples.map(e =>
+            `<div class="mem-item">
+               <span class="mem-rate ${e.rating ? 'pos' : 'neg'}">${e.rating ? '👍' : '👎'}</span>
+               <span class="mem-prompt">${esc(e.prompt)}</span>
+               <span class="mem-sim">${Math.round(e.similarity*100)}%</span>
+             </div>`).join("");
+          block.appendChild(wrap);
+        }
+        else if (step.type === "tool_call")
           addBlock("tool-call", `🔧 ${step.name}`, "Arguments",
                    JSON.stringify(step.arguments, null, 2));
         else if (step.type === "tool_result") {
           const result = typeof step.result === "string"
             ? step.result : JSON.stringify(step.result, null, 2);
           const fileInfo = extractFileUrl(result);
+          let block;
           if (fileInfo) {
-            const block = addBlock("tool-result", `📦 ${step.name}`, "File returned");
+            block = addBlock("tool-result", `📦 ${step.name}`, "File returned");
             renderFile(block, fileInfo);
           } else {
-            addBlock("tool-result", `📦 ${step.name}`, "Output", result);
+            block = addBlock("tool-result", `📦 ${step.name}`, "Output", result);
           }
+          if (step.images?.length) renderInlineImages(block, step.images);
         }
         else if (step.type === "message" && step.content)
           addBlock("assistant", "Assistant", esc(step.content));
       }
       addVerdict(data.tools_called);
+      if (SERVER_CONFIG.feedback && data.call_id) addRating(data.call_id);
     }
   } catch(e) {
     thinking.remove();
@@ -587,6 +997,18 @@ function getHeaders() {
 }
 
 // ── File rendering ────────────────────────────────────────────────────────────
+function renderInlineImages(block, images) {
+  for (const im of images) {
+    const wrap = document.createElement("div");
+    wrap.className = "file-preview";
+    const img = document.createElement("img");
+    img.src = `data:${im.mimeType};base64,${im.data}`;
+    img.alt = "image returned by tool";
+    wrap.appendChild(img);
+    block.appendChild(wrap);
+  }
+}
+
 function extractFileUrl(text) {
   const m = text.match(/https?:\/\/[^\s"']+\/files\/[a-f0-9]+\/([^\s"']+)/i);
   return m ? { url: m[0], filename: m[1] } : null;
@@ -646,6 +1068,65 @@ function renderFile(block, { url, filename }) {
   } else {
     block.appendChild(dlBtn);
   }
+}
+
+// ── Generate test cases ───────────────────────────────────────────────────────
+let _genTests = [];
+
+async function generateTests() {
+  const btn     = document.getElementById("genBtn");
+  const apiKey  = document.getElementById("apiKey").value.trim();
+  const model   = document.getElementById("modelSel").value;
+  const baseUrl = document.getElementById("baseUrl").value.trim();
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Generating…';
+
+  try {
+    const res  = await fetch("/mcpark/generate-tests", {
+      method:  "POST",
+      headers: {"Content-Type": "application/json"},
+      body:    JSON.stringify({
+        api_key: apiKey || null, provider, model,
+        base_url: baseUrl || null, default_headers: getHeaders(),
+        mcp_url: MCP_URL, mcp_auth: MCP_AUTH,
+      }),
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      btn.innerHTML = "✨ Generate Test Cases";
+      btn.disabled  = false;
+      addBlock("error", "Generate Tests Failed", esc(data.error));
+      return;
+    }
+
+    _genTests = data.tests || [];
+    const section = document.getElementById("genSection");
+    const list    = document.getElementById("genList");
+    section.style.display = "block";
+
+    list.innerHTML = _genTests.map((t, i) => `
+      <button class="test-chip" onclick="fillFromTest(${i})">
+        <div class="tc-tool" style="${t.tool === 'multi' ? 'color:#f59e0b' : ''}">${t.tool === 'multi' ? '⚡ multi-tool' : esc(t.tool)}</div>
+        ${esc(t.prompt)}
+      </button>
+    `).join("");
+
+  } catch(e) {
+    addBlock("error", "Generate Tests Failed", esc(e.message));
+  }
+
+  btn.innerHTML = "✨ Generate Test Cases";
+  btn.disabled  = false;
+}
+
+function fillFromTest(i) {
+  const t  = _genTests[i];
+  const ta = document.getElementById("prompt");
+  ta.value = t.prompt;
+  autoResize(ta);
+  ta.focus();
 }
 
 // init

@@ -40,31 +40,13 @@ def generate_image(prompt: str) -> str:
     return app.serve_file("generated_image.png", image_bytes, port=8002)
 
 
-# ── Concept example: serving an already existing image file ──────────────────
-# No conversion needed — serve_file just hosts the file and returns the URL.
-#
-# @app.create_tool_api("/generate-preimage")
-# def generate_preimage() -> str:
-#     """Return a pre-existing image file directly."""
-#     return app.serve_file("photo.png", "/path/to/photo.png", port=8002)
-# ─────────────────────────────────────────────────────────────────────────────
+
+@app.create_tool_api("/generate-preimage")
+def generate_preimage() -> str:
+    """Return a pre-existing image file directly."""
+    return app.serve_file("photo.png", "/path/to/photo.png", port=8002)
 
 
-@app.create_tool_api("/sales-report")
-def sales_report() -> str:
-    """
-    Generate a sales report as an Excel file.
-    Use this when the user asks for a sales report or data export.
-    """
-    import pandas as pd
-
-    df = pd.DataFrame({
-        "Month":    ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        "Sales":    [12400, 15800, 13200, 17600, 19100, 22300],
-        "Expenses": [8200,  9400,  8900,  10200, 11300, 12800],
-        "Profit":   [4200,  6400,  4300,  7400,  7800,  9500],
-    })
-    return app.serve_file("sales_report.xlsx", df, port=8002)
 
 
 if __name__ == "__main__":
